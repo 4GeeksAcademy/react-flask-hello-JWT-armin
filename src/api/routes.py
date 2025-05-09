@@ -74,7 +74,7 @@ def login():
         return jsonify({"error": "Bad email or password"}), 401
 
     # Crear token de acceso
-    access_token = create_access_token(identity=user.id)
+    access_token = create_access_token(identity=str(user.id))
 
     return jsonify({
         "token": access_token,
@@ -88,7 +88,10 @@ def login():
 def validate_token():
     # Obtener identidad del usuario actual (del token)
     current_user_id = get_jwt_identity()
-    user = User.query.get(current_user_id)
+
+    user_id = int(current_user_id)
+
+    user = User.query.get(user_id)
 
     if not user:
         return jsonify({"error": "User not found"}), 404
